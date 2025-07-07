@@ -1,0 +1,1 @@
+// Composant fournisseurs externes
