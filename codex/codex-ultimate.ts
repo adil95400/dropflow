@@ -86,7 +86,7 @@ import React from 'react'
 export default function ${page.replace(/\.tsx$/, '')}() {
   return <div className=\"p-4\">{/* ${page} */}</div>
 }`.trimStart())
-      console.log(`✅ Page ${page} créée.`)
+      console.log(`✅ Page ${page} a été créée.`)
       updateRoutesFile(page)
       generateTest(page)
       generateDoc(page)
@@ -106,7 +106,7 @@ import React from 'react'
 export default function ${page.replace(/\.tsx$/, '')}() {
   return <div className=\"p-4\">{/* ${page} */}</div>
 }`.trimStart())
-        console.log(`✅ ${page} créée.`)
+        console.log(`✅ ${page} a été créée.`)
         updateRoutesFile(page)
         generateTest(page)
         generateDoc(page)
@@ -119,19 +119,15 @@ export default function ${page.replace(/\.tsx$/, '')}() {
   if (choice === '2' || choice === '3') {
     console.log("\n📦 Modules à générer : Supabase, OpenAI, Zapier")
 
-    if (!fs.existsSync(MODULES.supabase)) {
-      fs.writeFileSync(MODULES.supabase, `
+    for (const [key, filepath] of Object.entries(MODULES)) {
+      if (!fs.existsSync(filepath)) {
+        const content = key === 'supabase' ? `
 import { createClient } from '@supabase/supabase-js'
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
   import.meta.env.VITE_SUPABASE_ANON_KEY!
-)`)
-      console.log("✅ Supabase lib générée.")
-    } else console.log("⚠️ supabase.ts existe déjà. Ignoré.")
-
-    if (!fs.existsSync(MODULES.openai)) {
-      fs.writeFileSync(MODULES.openai, `
+)` : key === 'openai' ? `
 export async function generateSEO({ title }: { title: string }) {
   const response = await fetch('/api/seo', {
     method: 'POST',
@@ -139,21 +135,20 @@ export async function generateSEO({ title }: { title: string }) {
     body: JSON.stringify({ title })
   })
   return response.json()
-}`)
-      console.log("✅ OpenAI lib générée.")
-    } else console.log("⚠️ openai.ts existe déjà. Ignoré.")
-
-    if (!fs.existsSync(MODULES.zapier)) {
-      fs.writeFileSync(MODULES.zapier, `
+}` : `
 export const triggerZap = async (event: string, payload: any) => {
   await fetch('/api/zapier', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ event, payload })
   })
-}`)
-      console.log("✅ Zapier lib générée.")
-    } else console.log("⚠️ zapier.ts existe déjà. Ignoré.")
+}`
+        fs.writeFileSync(filepath, content.trimStart())
+        console.log(`✅ ${key} a été généré.`)
+      } else {
+        console.log(`⚠️ ${key} existe déjà.`)
+      }
+    }
   }
 
   console.log("\n🎨 Génération des composants UI de base")
@@ -167,7 +162,7 @@ import React from 'react'
 export function ${comp.replace(/\.tsx$/, '')}() {
   return <div className=\"p-2 border rounded\">${comp.replace(/\.tsx$/, '')} UI</div>
 }`.trimStart())
-      console.log(`✅ ${comp} généré.`)
+      console.log(`✅ ${comp} a été généré.`)
     } else {
       console.log(`⚠️ ${comp} existe déjà.`)
     }
@@ -182,8 +177,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json({ message: '${mod.name} endpoint OK' })
-}`)
-      console.log(`✅ API ${mod.name}.ts généré.`)
+}`.trimStart())
+      console.log(`✅ API ${mod.name}.ts a été généré.`)
     } else {
       console.log(`⚠️ API ${mod.name}.ts existe déjà.`)
     }
@@ -197,7 +192,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const prBody = `PR auto générée pour ajouter les composants nécessaires à la date du ${date}.`
   execSync(`gh pr create --title "${prTitle}" --body "${prBody}"`, { stdio: 'inherit' })
 
-  console.log("\n✅ Codex Ultimate terminé, pushé et PR créée automatiquement 🚀")
+  console.log(`\n✅ Codex Ultimate terminé, pushé et PR créée 🚀`)
   rl.close()
 }
 
