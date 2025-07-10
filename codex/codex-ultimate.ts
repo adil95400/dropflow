@@ -84,7 +84,16 @@ async function main() {
 import React from 'react'
 
 export default function ${page.replace(/\.tsx$/, '')}() {
-  return <div className=\"p-4\">{/* ${page} */}</div>
+  return (
+    <main className="min-h-screen bg-white p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold mb-4">${page.replace(/\.tsx$/, '')}</h1>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm">
+          {/* Content for ${page} */}
+        </div>
+      </div>
+    </main>
+  )
 }`.trimStart())
       console.log(`✅ Page ${page} a été créée.`)
       updateRoutesFile(page)
@@ -104,7 +113,16 @@ export default function ${page.replace(/\.tsx$/, '')}() {
 import React from 'react'
 
 export default function ${page.replace(/\.tsx$/, '')}() {
-  return <div className=\"p-4\">{/* ${page} */}</div>
+  return (
+    <main className="min-h-screen bg-white p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold mb-4">${page.replace(/\.tsx$/, '')}</h1>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 shadow-sm">
+          {/* Content for ${page} */}
+        </div>
+      </div>
+    </main>
+  )
 }`.trimStart())
         console.log(`✅ ${page} a été créée.`)
         updateRoutesFile(page)
@@ -160,7 +178,7 @@ export const triggerZap = async (event: string, payload: any) => {
 import React from 'react'
 
 export function ${comp.replace(/\.tsx$/, '')}() {
-  return <div className=\"p-2 border rounded\">${comp.replace(/\.tsx$/, '')} UI</div>
+  return <div className="p-2 border rounded">${comp.replace(/\.tsx$/, '')} UI</div>
 }`.trimStart())
       console.log(`✅ ${comp} a été généré.`)
     } else {
