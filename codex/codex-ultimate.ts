@@ -18,6 +18,19 @@ const MODULES = {
 const PAGES_DIR = 'src/pages'
 const LIB_DIR = 'src/lib'
 
+const MISSING_PAGES = [
+  'Register.tsx',
+  'Profile.tsx',
+  'Settings.tsx',
+  'Subscription.tsx',
+  'Help.tsx',
+  'Notifications.tsx',
+  'Pricing.tsx',
+  'Terms.tsx',
+  'Privacy.tsx',
+  'Contact.tsx'
+]
+
 async function main() {
   console.log("\n🧠 Codex Ultimate Generator - DropFlow Edition\n")
 
@@ -25,8 +38,9 @@ async function main() {
   console.log("1. Créer une page (Auth, Dashboard)")
   console.log("2. Générer des modules (Supabase, OpenAI, Zapier)")
   console.log("3. Tout générer (Page + Lib)")
+  console.log("4. Générer toutes les pages manquantes")
 
-  const choice = await ask("\n👉 Ton choix (1, 2 ou 3) : ")
+  const choice = await ask("\n👉 Ton choix (1, 2, 3 ou 4) : ")
   const date = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 16)
   const branch = `codex-ultimate-${date}`
 
@@ -45,12 +59,31 @@ async function main() {
 import React from 'react'
 
 export default function ${page.replace(/\.tsx$/, '')}() {
-  return <div className="p-4">{/* ${page} */}</div>
+  return <div className=\"p-4\">{/* ${page} */}</div>
 }
       `.trimStart())
       console.log(`✅ Page ${page} créée.`)
     } else {
       console.log(`⚠️ ${page} existe déjà. Ignoré.`)
+    }
+  }
+
+  if (choice === '4') {
+    console.log("\n📄 Génération des pages manquantes :")
+    for (const page of MISSING_PAGES) {
+      const pagePath = path.join(PAGES_DIR, page)
+      if (!fs.existsSync(pagePath)) {
+        fs.writeFileSync(pagePath, `
+import React from 'react'
+
+export default function ${page.replace(/\.tsx$/, '')}() {
+  return <div className=\"p-4\">{/* ${page} */}</div>
+}
+        `.trimStart())
+        console.log(`✅ ${page} créée.`)
+      } else {
+        console.log(`⚠️ ${page} existe déjà. Ignoré.`)
+      }
     }
   }
 
@@ -101,7 +134,11 @@ export const triggerZap = async (event: string, payload: any) => {
   execSync(`git commit -m "chore(codex): génération du script ultimate ${date}"`, { stdio: 'inherit' })
   execSync(`git push -u origin ${branch}`, { stdio: 'inherit' })
 
-  console.log("\n✅ Codex Ultimate terminé et pushé avec succès 🚀")
+  const prTitle = `🚀 Codex Ultimate - Génération ${date}`
+  const prBody = `PR auto générée pour ajouter les composants nécessaires à la date du ${date}.`
+  execSync(`gh pr create --title "${prTitle}" --body "${prBody}"`, { stdio: 'inherit' })
+
+  console.log("\n✅ Codex Ultimate terminé, pushé et PR créée automatiquement 🚀")
   rl.close()
 }
 
