@@ -1,36 +1,50 @@
 // api/seo.ts
-import type { VercelRequest, VercelResponse } from '@vercel/node'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // ⚠️ NE PAS utiliser VITE_ ici, réservé au frontend
-})
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export const config = {
+  runtime: 'edge',
+}
+
+export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' })
+    return new Response(JSON.stringify({ error: 'Méthode non autorisée' }), { status: 405 })
   }
 
   try {
-    const { title } = req.body
+    const { title } = await req.json()
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         {
           role: 'system',
-          content: 'Tu es un expert SEO qui génère des balises optimisées pour des fiches produits e-commerce.',
+          content: `Tu es un expert SEO. Génère les balises optimisées suivantes en JSON :
+{
+  "title": "...",
+  "description": "...",
+  "keywords": "..."
+}`,
         },
         {
           role: 'user',
-          content: `Voici le titre du produit : ${title}`,
+          content: `Titre du produit : ${title}`,
         },
       ],
     })
 
-    return res.status(200).json({ result: completion.choices[0].message })
+    const json = completion.choices[0].message?.content?.trim()
+    const result = JSON.parse(json || '{}')
+
+    return new Response(JSON.stringify({ result }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (error) {
-    console.error('❌ Erreur OpenAI:', error)
-    return res.status(500).json({ error: 'Erreur lors de la génération SEO' })
+    console.error('❌ Erreur SEO OpenAI:', error)
+    return new Response(JSON.stringify({ error: 'Erreur génération SEO' }), {
+      status: 500,
+    })
   }
 }

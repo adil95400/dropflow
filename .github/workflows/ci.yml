@@ -9,28 +9,48 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: 🧠 Setup Git User
+        run: |
+          git config --global user.name "DropFlow Bot"
+          git config --global user.email "bot@dropflow.io"
+
+      - name: 🧠 Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📆 Install dependencies
         run: npm install
 
-      - name: Lint
+      - name: 🫠 Run Codex Generator
+        run: npm run codex:full
+
+      - name: 📉 Commit changes from Codex if needed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "✨ chore(codex): auto-update via Codex"
+            git push origin HEAD
+          else
+            echo "✅ Aucun changement à committer."
+          fi
+
+      - name: 🗂 Lint & Format
         run: npm run format
 
-      - name: Build
+      - name: 🔧 Build Project
         run: npm run build
 
-      - name: Preview Vercel
+      - name: 🌍 Deploy to Vercel (Production & Preview)
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--prod'
-          working-directory: .
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-args: ${{ github.event_name == 'pull_request' && '--prebuilt' || '--prod' }}
+          working-directory: .
