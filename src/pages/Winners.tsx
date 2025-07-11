@@ -1,1 +1,3 @@
-// TODO: Implement Winners.tsx
+import React from 'react';
+const Winners = () => <div>Winners page</div>;
+export default Winners;

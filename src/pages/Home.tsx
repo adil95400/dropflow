@@ -1,1 +1,3 @@
-// TODO: Implement Home.tsx
+import React from 'react';
+const Home = () => <div>Home page</div>;
+export default Home;

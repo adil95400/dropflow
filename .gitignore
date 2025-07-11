@@ -1,2 +1,4 @@
 // TODO: Implement .gitignore.env.local
 .vercel
+.env.local
+.env.local

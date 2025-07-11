@@ -12,6 +12,7 @@
     "codex:full": "tsx codex/codex-ultimate.ts 3"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.5",
     "axios": "^1.6.5",
     "clsx": "^1.2.1",
     "framer-motion": "^12.23.0",
