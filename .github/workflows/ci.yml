@@ -52,5 +52,6 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-args: ${{ github.event_name == 'pull_request' && '--prebuilt' || '--prod' }}
+          vercel-args: >-
+            ${{ github.event_name == 'pull_request' && '--prebuilt' || '--prod' }}
           working-directory: .
