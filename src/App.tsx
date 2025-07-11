@@ -14,6 +14,10 @@ import SyncShopifyAdvanced from './pages/SyncShopifyAdvanced';
 import OptimisationAI from './pages/OptimisationAI';
 import Sidebar from './components/Sidebar';
 
+import Auth from './pages/Auth';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+
 function App() {
   return (
     <div className="flex">
@@ -32,6 +36,11 @@ function App() {
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/sync-shopify" element={<SyncShopifyAdvanced />} />
           <Route path="/optimisation" element={<OptimisationAI />} />
+
+          {/* Auth routes */}
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </div>

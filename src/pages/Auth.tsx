@@ -1,29 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '@/lib/supabase'
 
-const Auth = () => {
+export default function Auth() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setError(error.message)
+    } else {
+      navigate('/dashboard')
+    }
+  }
+
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Connexion à DropFlow</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
-            <input type="email" className="w-full px-4 py-2 border rounded-md" required />
-          </div>
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Mot de passe</label>
-            <input type="password" className="w-full px-4 py-2 border rounded-md" required />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            Se connecter
-          </button>
-        </form>
-      </div>
+    <div className="max-w-md mx-auto mt-20 p-4 border rounded-xl shadow">
+      <h1 className="text-xl font-bold mb-4">Connexion</h1>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Mot de passe"
+          className="w-full p-2 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <button type="submit" className="w-full bg-black text-white py-2 rounded">
+          Se connecter
+        </button>
+      </form>
+      <p className="text-sm mt-4 text-center">
+        Pas encore de compte ? <a href="/register" className="text-blue-600 underline">Créer un compte</a>
+      </p>
     </div>
-  );
-};
-
-export default Auth;
+  )
+}
