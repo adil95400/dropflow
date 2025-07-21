@@ -9,6 +9,7 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "codex": "tsx codex/codex-ultimate.ts",
+    "test": "vitest run",
     "codex:full": "tsx codex/codex-ultimate.ts 3"
   },
   "dependencies": {
@@ -24,18 +25,22 @@
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.1.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.0.12",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.16",
     "husky": "^9.0.7",
+    "jsdom": "^26.1.0",
     "postcss": "^8.4.30",
     "prettier": "^3.0.0",
     "tailwindcss": "^3.4.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "vitest": "^3.2.4"
   }
 }
