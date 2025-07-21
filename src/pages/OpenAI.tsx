@@ -1,5 +1,6 @@
-import React from "react";
+import React from 'react'
 
-export default function OpenAI() {
-  return <div className="p-4">{/* openai page */}</div>;
+export default function OpenAIPage() {
+  return <div className="p-4">{/* openai.tsx */}</div>
 }
+      
